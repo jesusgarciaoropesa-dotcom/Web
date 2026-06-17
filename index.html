@@ -408,8 +408,14 @@ function Calendar({ blocked = [], range, onSelect }) {
     const isPast = d < today;
     const isBlocked = blockedSet.has(ymd(d));
     // El día de SALIDA puede caer en un día ocupado (esa noche ya no se duerme),
-    // siempre que ya haya una entrada elegida y aún no haya salida.
-    const usableAsCheckout = isBlocked && from && !to && d > from;
+    // siempre que ya haya entrada elegida, aún no haya salida, y todas las
+    // noches entre la entrada y este día estén libres.
+    let usableAsCheckout = isBlocked && from && !to && d > from;
+    if (usableAsCheckout) {
+      for (let c = new Date(from.getTime() + 86400000); c < d; c = new Date(c.getTime() + 86400000)) {
+        if (blockedSet.has(ymd(c))) { usableAsCheckout = false; break; }
+      }
+    }
     if (isPast) return;
     if (isBlocked && !usableAsCheckout) return;
     if (!from || (from && to)) { onSelect({ from: d, to: undefined }); return; }
