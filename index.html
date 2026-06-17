@@ -16,11 +16,11 @@
 <body>
 <div id="root"></div>
 
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.28.4/babel.min.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<script type="text/babel" data-presets="env,react">
+<script type="text/babel" data-presets="react">
 const { useState, useEffect, useRef, createContext, useContext } = React;
 
 // ── Iconos SVG inline (sin dependencia de CDN externo) ─────
@@ -64,7 +64,6 @@ const Wind = makeIcon(<><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8
 // ── Config Supabase ───────────────────────────────────────
 const SB_URL = "https://lshxkfzsfscvwxqeesjr.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzaHhrZnpzZnNjdnd4cWVlc2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MjI2MzgsImV4cCI6MjA5NjE5ODYzOH0.Z1b5rwrvTA1M5P4xYrJ7uvhARp2yLQ0k-7ur51NQRwI";
-const RESEND  = "re_PL2ruKgq_6VVURKgB7S9NdQaD77DRXzrS";
 const ADMIN   = "jesusgarciaoropesa@gmail.com";
 
 // ── Imágenes reales (comprimidas para preview) ────────────
@@ -193,12 +192,21 @@ async function sbPost(table, body) {
 
 async function sendAdminEmail(to, subject, html) {
   try {
-    await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://email-hostal.jesusgarciaoropesa.workers.dev/", {
       method: "POST",
-      headers: { Authorization: `Bearer ${RESEND}`, "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ from: "Hostal La Plata <onboarding@resend.dev>", to: [to], subject, html }),
     });
-  } catch (e) { console.warn("email notify failed (normal CORS in preview):", e); }
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("Worker/Resend error:", err);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("Email error:", e);
+    return false;
+  }
 }
 
 // Inventory-aware availability — mirrors real backend logic exactly
