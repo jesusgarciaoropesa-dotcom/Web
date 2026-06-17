@@ -405,10 +405,16 @@ function Calendar({ blocked = [], range, onSelect }) {
 
   function handleClick(d) {
     if (!d) return;
-    const isBlocked = blockedSet.has(ymd(d)) || d < today;
-    if (isBlocked) return;
+    const isPast = d < today;
+    const isBlocked = blockedSet.has(ymd(d));
+    // El día de SALIDA puede caer en un día ocupado (esa noche ya no se duerme),
+    // siempre que ya haya una entrada elegida y aún no haya salida.
+    const usableAsCheckout = isBlocked && from && !to && d > from;
+    if (isPast) return;
+    if (isBlocked && !usableAsCheckout) return;
     if (!from || (from && to)) { onSelect({ from: d, to: undefined }); return; }
     if (d <= from) { onSelect({ from: d, to: undefined }); return; }
+    // Validar que TODAS las noches entre entrada y salida estén libres (la noche de salida no cuenta)
     let hasBlocked = false;
     for (let c = new Date(from.getTime() + 86400000); c < d; c = new Date(c.getTime() + 86400000)) {
       if (blockedSet.has(ymd(c))) { hasBlocked = true; break; }
@@ -430,12 +436,16 @@ function Calendar({ blocked = [], range, onSelect }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 1 }}>
         {getDays().map((d, i) => {
           if (!d) return <div key={"e" + i} style={{ aspectRatio: "1", minHeight: 30 }} />;
-          const isBlocked = blockedSet.has(ymd(d)) || d < today;
+          const isPast = d < today;
+          const isBlockedRaw = blockedSet.has(ymd(d));
+          const usableAsCheckout = isBlockedRaw && from && !to && d > from;
+          const isBlocked = (isBlockedRaw || isPast) && !usableAsCheckout;
           const isFrom = from && ymd(from) === ymd(d), isTo = to && ymd(to) === ymd(d);
           const inRange = from && to && d > from && d < to;
           const inHover = from && !to && hover && d > from && d <= hover;
           let bg = "transparent", color = "#190e0d", fw = 400;
-          if (isBlocked) { bg = "#f4f0ee"; color = "#b8b0ad"; }
+          if (isBlockedRaw && !usableAsCheckout) { bg = "#f4f0ee"; color = "#b8b0ad"; }
+          else if (usableAsCheckout) { bg = "rgba(137,0,0,0.04)"; color = "#190e0d"; }
           if (inRange || inHover) bg = "rgba(137,0,0,0.08)";
           if (isFrom || isTo) { bg = "#890000"; color = "#fefbf8"; fw = 600; }
           return (
