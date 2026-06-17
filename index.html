@@ -438,7 +438,13 @@ function Calendar({ blocked = [], range, onSelect }) {
           if (!d) return <div key={"e" + i} style={{ aspectRatio: "1", minHeight: 30 }} />;
           const isPast = d < today;
           const isBlockedRaw = blockedSet.has(ymd(d));
-          const usableAsCheckout = isBlockedRaw && from && !to && d > from;
+          let usableAsCheckout = isBlockedRaw && from && !to && d > from;
+          if (usableAsCheckout) {
+            // Solo válido como salida si todas las noches entre la entrada y este día están libres
+            for (let c = new Date(from.getTime() + 86400000); c < d; c = new Date(c.getTime() + 86400000)) {
+              if (blockedSet.has(ymd(c))) { usableAsCheckout = false; break; }
+            }
+          }
           const isBlocked = (isBlockedRaw || isPast) && !usableAsCheckout;
           const isFrom = from && ymd(from) === ymd(d), isTo = to && ymd(to) === ymd(d);
           const inRange = from && to && d > from && d < to;
