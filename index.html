@@ -231,11 +231,6 @@ const SIGHTS_BLOCKS = [
   { icon: Utensils, title: "Gastronomía y consejos", text: "Completa tu visita probando el tostón asado, el cordero, las migas castellanas y comprando auténtico mazapán artesano en los obradores de la villa. Un día completo es suficiente para ver lo principal, pero pasar la noche revela la magia del pueblo iluminado." },
 ];
 
-const REVIEWS = [
-  { name: "María G.", text: "Una joya en Oropesa. El trato familiar y la ubicación junto al castillo lo hacen inolvidable.", rating: 5 },
-  { name: "Jean‑Luc P.", text: "Encanto auténtico, habitaciones cuidadas y un desayuno excelente. Volveremos.", rating: 5 },
-  { name: "Carlos R.", text: "Parada perfecta entre Madrid y Extremadura. Relación calidad‑precio inmejorable.", rating: 5 },
-];
 
 // ── Helpers ───────────────────────────────────────────────
 function ymd(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
@@ -1200,22 +1195,24 @@ function Sights() {
 
 // ── Reviews ──────────────────────────────────────────────
 function Reviews() {
+  const GOOGLE_URL = "https://www.google.com/maps/search/?api=1&query=Hostal+La+Plata+Oropesa+Toledo";
   return (
     <section id="resenas" style={{ padding: "96px 20px", background: "#fefbf8" }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-        <Reveal style={{ maxWidth: 660, marginBottom: 56 }}>
+      <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
+        <Reveal>
           <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.3em", color: "#890000", fontWeight: 600 }}>Reseñas</span>
           <h2 style={{ marginTop: 16, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: "clamp(2rem,4vw,3rem)", color: "#190e0d" }}>Lo que dicen nuestros huéspedes</h2>
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 24 }}>
-          {REVIEWS.map(r => (
-            <figure key={r.name} style={{ background: "#fff", border: "1px solid #e4dbda", borderRadius: 12, padding: 28, boxShadow: "0 4px 20px -8px rgba(25,14,13,.15)" }}>
-              <div style={{ display: "flex", gap: 2, color: "#d09844", marginBottom: 16 }}>{Array.from({ length: r.rating }).map((_, i) => <span key={i}>★</span>)}</div>
-              <blockquote style={{ fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: "1.25rem", color: "#190e0d", lineHeight: 1.4 }}>"{r.text}"</blockquote>
-              <figcaption style={{ marginTop: 20, fontSize: "0.875rem", fontWeight: 600, color: "#5a5352" }}>— {r.name}</figcaption>
-            </figure>
-          ))}
-        </div>
+        <Reveal style={{ marginTop: 40 }}>
+          <div style={{ background: "#fff", border: "1px solid #e4dbda", borderRadius: 16, padding: "40px 28px", boxShadow: "0 4px 24px -8px rgba(25,14,13,.15)" }}>
+            <div style={{ fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: "4rem", fontWeight: 700, color: "#190e0d", lineHeight: 1 }}>4,3</div>
+            <div style={{ display: "flex", gap: 4, color: "#d09844", fontSize: "1.5rem", justifyContent: "center", margin: "12px 0" }}>
+              <span>★</span><span>★</span><span>★</span><span>★</span><span style={{ color: "#d8cfc9" }}>★</span>
+            </div>
+            <div style={{ fontSize: "1rem", color: "#5a5352", marginBottom: 28 }}>Basado en <strong>casi 1.000 reseñas reales</strong> en Google</div>
+            <a href={GOOGLE_URL} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", background: "#890000", color: "#fff", textDecoration: "none", padding: "14px 32px", borderRadius: 10, fontSize: "0.95rem", fontWeight: 600 }}>Ver todas las reseñas en Google</a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
