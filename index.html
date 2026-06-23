@@ -170,15 +170,17 @@ const ADMIN   = "jesusgarciaoropesa@gmail.com";
 
 // ── Imágenes reales (comprimidas para preview) ────────────
 const IMG = {
-  hero:      "fotos/01-Exterior/379695077.jpg",
-  doble1:    "fotos/02-Habitacion-Doble-Cama-Grande/498994417.jpg",
-  doble2:    "fotos/02-Habitacion-Doble-Cama-Grande/498993311.jpg",
-  apto:      "fotos/05-Estudio-Estandar/498993940.jpg",
-  aptoSalon: "fotos/05-Estudio-Estandar/498993967.jpg",
-  fam1:      "fotos/03-Habitacion-Doble-2-Camas/498993131.jpg",
-  fam2:      "fotos/03-Habitacion-Doble-2-Camas/498993494.jpg",
-  fam3:      "fotos/04-Suite-Terraza/379695071.jpg",
-  bano:      "fotos/02-Habitacion-Doble-Cama-Grande/498993348.jpg",
+  hero:        "fotos/01-Exterior/379695077.jpg",
+  camaGrande:  "fotos/02-Habitacion-Doble-Cama-Grande/498994417.jpg",
+  camaGrande2: "fotos/02-Habitacion-Doble-Cama-Grande/498993311.jpg",
+  dosCamas:    "fotos/03-Habitacion-Doble-2-Camas/498993131.jpg",
+  dosCamas2:   "fotos/03-Habitacion-Doble-2-Camas/498993494.jpg",
+  suite:       "fotos/04-Suite-Terraza/379695071.jpg",
+  suiteExt:    "fotos/04-Suite-Terraza/376533996.jpg",
+  estudio:     "fotos/05-Estudio-Estandar/498993940.jpg",
+  estudio2:    "fotos/05-Estudio-Estandar/498993967.jpg",
+  estudioAdap: "fotos/06-Estudio-Adaptado-Movilidad/498993650.jpg",
+  bano:        "fotos/02-Habitacion-Doble-Cama-Grande/498993348.jpg",
 };
 
 // ── Constantes exactas del sitio original ─────────────────
@@ -186,10 +188,10 @@ const WA_NUMBER = "+34 610 24 86 33";
 const WA_MSG = "Hola, me gustaría hacer una reserva en el Hostal La Plata. ¿Podéis indicarme disponibilidad?";
 const WA_LINK = `https://wa.me/34610248633?text=${encodeURIComponent(WA_MSG)}`;
 
-const ROOM_PRICES = { doble: 40, apartamento: 60, familiar: 75 };
-const ROOM_LABELS = { doble: "Habitación doble", apartamento: "Apartamento con cocina", familiar: "Familiar / Hidromasaje" };
+const ROOM_PRICES = { "cama-grande": 40, "dos-camas": 40, suite: 75, estudio: 60, "estudio-adaptado": 60 };
+const ROOM_LABELS = { "cama-grande": "Habitación con cama grande", "dos-camas": "Habitación Doble 2 camas", suite: "Suite con terraza", estudio: "Estudio Estándar", "estudio-adaptado": "Estudio Adaptado Movilidad" };
 // Mapa de habitaciones físicas por tipo (fuente fiable de disponibilidad, igual que la app admin)
-const ROOMS_BY_TYPE = { doble: ["101","102","103","104","105","106"], familiar: ["107","108"], apartamento: ["A-1","A-2"] };
+const ROOMS_BY_TYPE = { "cama-grande": ["101","102","103","104"], "dos-camas": ["105","106"], suite: ["107","108"], estudio: ["A-1"], "estudio-adaptado": ["A-2"] };
 function roomsCount(roomType){ return (ROOMS_BY_TYPE[roomType] || []).length || 1; }
 
 const NAV = [
@@ -202,19 +204,29 @@ const NAV = [
 
 const ROOMS = [
   {
-    type: "doble", name: "Habitación doble", price: 40, img: IMG.doble1, icon: BedDouble,
-    desc: "Habitación con decoración rústica, vigas de madera, baño privado y vistas a la montaña. Algunas con balcón.",
-    features: ["Baño privado con ducha", "TV pantalla plana", "Aire acondicionado", "Armario y artículos de aseo"],
+    type: "cama-grande", name: "Habitación con cama grande", price: 40, img: IMG.camaGrande, icon: BedDouble,
+    desc: "Habitación doble con cama de matrimonio, decoración rústica, baño privado con ducha, TV y aire acondicionado.",
+    features: ["Baño privado con ducha", "TV pantalla plana", "Aire acondicionado", "Vistas al jardín"],
   },
   {
-    type: "apartamento", name: "Apartamento con cocina", price: 60, img: IMG.apto, icon: ChefHat, featured: true,
-    desc: "Apartamento con zona de cocina equipada y salón independiente. Perfecto para estancias largas o familias.",
-    features: ["Cocina con microondas y nevera", "Utensilios incluidos", "Baño privado", "TV y aire acondicionado"],
+    type: "dos-camas", name: "Habitación Doble con ducha - 2 camas", price: 40, img: IMG.dosCamas, icon: BedDouble,
+    desc: "Habitación con dos camas individuales, baño privado con ducha, TV y aire acondicionado.",
+    features: ["Baño privado con ducha", "2 camas individuales", "TV pantalla plana", "Aire acondicionado"],
   },
   {
-    type: "familiar", name: "Familiar / Hidromasaje", price: 75, img: IMG.fam1, icon: Bath,
-    desc: "Habitaciones familiares amplias con varias camas, o doble con bañera de hidromasaje para una escapada especial.",
-    features: ["Bañera de hidromasaje (selección)", "Hasta 4 plazas", "Vistas a la montaña", "Algunas con balcón"],
+    type: "suite", name: "Suite con terraza", price: 75, img: IMG.suite, icon: Bath, featured: true,
+    desc: "Suite con terraza privada y cama de matrimonio. La opción más especial del hostal.",
+    features: ["Terraza privada", "Baño privado", "TV pantalla plana", "Aire acondicionado"],
+  },
+  {
+    type: "estudio", name: "Estudio Estándar", price: 60, img: IMG.estudio, icon: ChefHat,
+    desc: "Estudio con cama doble, sofá cama y zona de cocina equipada. Ideal para estancias largas o familias.",
+    features: ["Cocina equipada", "Sofá cama", "Baño privado", "TV y aire acondicionado"],
+  },
+  {
+    type: "estudio-adaptado", name: "Estudio Adaptado Movilidad", price: 60, img: IMG.estudioAdap, icon: ChefHat,
+    desc: "Estudio adaptado para personas con movilidad reducida. Dos camas individuales, sofá cama y acceso adaptado.",
+    features: ["Adaptado movilidad reducida", "2 camas + sofá cama", "Baño adaptado", "TV y aire acondicionado"],
   },
 ];
 
@@ -232,14 +244,14 @@ const ROOM_AMENITIES = [
 ];
 
 const GALLERY = [
-  { src: IMG.doble1, alt: "Habitación doble con cabecero de forja" },
-  { src: IMG.fam2, alt: "Habitación familiar con dos camas y cortinas rojas" },
-  { src: IMG.apto, alt: "Apartamento con cocina equipada" },
-  { src: IMG.bano, alt: "Baño privado con doble lavabo" },
-  { src: IMG.fam1, alt: "Salón de habitación familiar con butacas" },
-  { src: IMG.doble2, alt: "Habitación doble con vigas de madera" },
-  { src: IMG.aptoSalon, alt: "Salón del apartamento con sofá y TV" },
-  { src: IMG.fam3, alt: "Habitación con dos camas individuales" },
+  { src: IMG.camaGrande,  alt: "Habitación con cama grande" },
+  { src: IMG.camaGrande2, alt: "Habitación con cama grande - vista alternativa" },
+  { src: IMG.dosCamas,    alt: "Habitación Doble con 2 camas" },
+  { src: IMG.suite,       alt: "Suite con terraza" },
+  { src: IMG.suiteExt,    alt: "Suite - exterior" },
+  { src: IMG.estudio,     alt: "Estudio Estándar" },
+  { src: IMG.estudioAdap, alt: "Estudio Adaptado Movilidad" },
+  { src: IMG.bano,        alt: "Baño privado" },
 ];
 
 const SERVICES = [
@@ -395,7 +407,7 @@ async function getInventoryMap() {
     const map = {};
     for (const r of rows || []) map[r.room_type] = r.units;
     return map;
-  } catch { return { doble: 3, apartamento: 2, familiar: 2 }; }
+  } catch { return { "cama-grande": 4, "dos-camas": 2, suite: 2, estudio: 1, "estudio-adaptado": 1 }; }
 }
 
 async function getBlockedDates(roomKey, days = 365) {
@@ -602,7 +614,7 @@ function AvailabilityDatePicker({ roomKey, value, onChange }) {
 // ── ReservationDialog — matches original exactly ──────────
 function ReservationDialog({ open, onOpenChange, initialRoom }) {
   const toast = useToast();
-  const emptyForm = (r) => ({ room_type: r || "doble", guest_name: "", guest_email: "", guest_phone: "", check_in: "", check_out: "", num_guests: 2 });
+  const emptyForm = (r) => ({ room_type: r || "cama-grande", guest_name: "", guest_email: "", guest_phone: "", check_in: "", check_out: "", num_guests: 2 });
   const [form, setForm] = useState(emptyForm(initialRoom));
   const [submitting, setSubmitting] = useState(false);
   const [confirmed, setConfirmed] = useState(null);
@@ -660,9 +672,11 @@ function ReservationDialog({ open, onOpenChange, initialRoom }) {
               <div>
                 <label style={lbl}>Tipo de habitación</label>
                 <select value={form.room_type} onChange={e => setForm({ ...form, room_type: e.target.value })} style={inp}>
-                  <option value="doble">Habitación doble — 40€/noche</option>
-                  <option value="apartamento">Apartamento con cocina — 60€/noche</option>
-                  <option value="familiar">Familiar / Hidromasaje — 75€/noche</option>
+                  <option value="cama-grande">Habitación con cama grande — 40€/noche</option>
+                  <option value="dos-camas">Habitación Doble 2 camas — 40€/noche</option>
+                  <option value="suite">Suite con terraza — 75€/noche</option>
+                  <option value="estudio">Estudio Estándar — 60€/noche</option>
+                  <option value="estudio-adaptado">Estudio Adaptado Movilidad — 60€/noche</option>
                 </select>
               </div>
               <div>
@@ -743,9 +757,11 @@ const nextId = () => `m${++_mid}`;
 const RESERVE_KEYWORDS = /reserv|disponibil|habitaci|noche|alojam/i;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CHAT_ROOMS = [
-  { key: "doble", label: "Habitación doble", price: 40, capacity: 2 },
-  { key: "apartamento", label: "Apartamento con cocina", price: 60, capacity: 4 },
-  { key: "familiar", label: "Familiar / Hidromasaje", price: 75, capacity: 5 },
+  { key: "cama-grande", label: "Habitación con cama grande", price: 40, capacity: 2 },
+    { key: "dos-camas", label: "Habitación Doble 2 camas", price: 40, capacity: 2 },
+    { key: "suite", label: "Suite con terraza", price: 75, capacity: 2 },
+    { key: "estudio", label: "Estudio Estándar", price: 60, capacity: 4 },
+    { key: "estudio-adaptado", label: "Estudio Adaptado Movilidad", price: 60, capacity: 4 },
 ];
 
 function ReservationChatbot() {
