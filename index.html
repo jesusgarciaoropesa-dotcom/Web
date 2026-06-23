@@ -97,7 +97,7 @@
   #splash-ringwrap{animation:splashPop .7s cubic-bezier(.2,.8,.2,1)}
   @keyframes splashPop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
   @keyframes splashNameIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-  #splash-ring{animation:splashFill 2.1s ease forwards}
+  #splash-ring{animation:splashFill 3s ease forwards}
   @keyframes splashFill{to{stroke-dashoffset:0}}
   #splash-screen.splash-hide{animation:splashOut .6s ease forwards}
   @keyframes splashOut{to{opacity:0;visibility:hidden}}
@@ -113,7 +113,7 @@
     setTimeout(function(){
       splash.classList.add('splash-hide');
       setTimeout(function(){ if(splash && splash.parentNode){ splash.style.display='none'; } }, 600);
-    }, 2300);
+    }, 3100);
   })();
 </script>
 <div id="root"></div>
