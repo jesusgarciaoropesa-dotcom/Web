@@ -1231,7 +1231,7 @@ function Gallery() {
   const [lightbox, setLightbox] = React.useState(null);
 
   const scroll = (dir) => {
-    if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 600, behavior: "smooth" });
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 480, behavior: "smooth" });
   };
 
   const lbPrev = (e) => { e.stopPropagation(); setLightbox(i => (i - 1 + GALLERY.length) % GALLERY.length); };
@@ -1248,13 +1248,14 @@ function Gallery() {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightbox]);
 
-  const arrowBtn = (side, onClick) => ({
-    position: "absolute", [side]: side === "left" ? -20 : -20, top: "50%", transform: "translateY(-50%)",
-    zIndex: 2, background: "#fff", border: "1px solid #e4dbda", borderRadius: "50%",
-    width: 40, height: 40, cursor: "pointer", fontSize: 22, color: "#190e0d",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    boxShadow: "0 2px 8px rgba(0,0,0,.15)", flexShrink: 0,
-  });
+  // Agrupar de 3 en 3: [foto alta, foto pequeña, foto pequeña]
+  const groups = [];
+  for (let i = 0; i < GALLERY.length; i += 3) groups.push({ start: i, photos: GALLERY.slice(i, i + 3) });
+
+  const H = 440; const GAP = 10;
+
+  const imgStyle = { width: "100%", height: "100%", objectFit: "cover", transition: "transform .4s", display: "block" };
+  const cardBase = { flexShrink: 0, borderRadius: 8, overflow: "hidden", cursor: "pointer", boxShadow: "0 4px 20px -8px rgba(25,14,13,.2)" };
 
   return (
     <section id="galeria" style={{ padding: "96px 20px", background: "#f1edeb", borderTop: "1px solid #e4dbda" }}>
@@ -1265,20 +1266,37 @@ function Gallery() {
           <p style={{ marginTop: 16, color: "#5a5352", fontSize: "1.125rem" }}>Habitaciones con encanto rústico, vigas de madera y detalles cuidados. Fotografías reales del hostal.</p>
         </Reveal>
 
-        <div style={{ position: "relative", padding: "0 28px" }}>
-          <button onClick={() => scroll(-1)} style={arrowBtn("left")}>‹</button>
-          <div ref={scrollRef} style={{ display: "flex", gap: 12, overflowX: "auto", scrollSnapType: "x mandatory", scrollbarWidth: "none", msOverflowStyle: "none" }}>
-            {GALLERY.map((img, i) => (
-              <div key={i} onClick={() => setLightbox(i)}
-                style={{ flexShrink: 0, width: 280, height: 210, borderRadius: 8, overflow: "hidden", cursor: "pointer", scrollSnapAlign: "start", boxShadow: "0 4px 20px -8px rgba(25,14,13,.15)" }}>
-                <img src={img.src} alt={img.alt} loading="lazy"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .4s" }}
-                  onMouseEnter={e => e.target.style.transform = "scale(1.05)"}
-                  onMouseLeave={e => e.target.style.transform = ""} />
-              </div>
+        <div style={{ position: "relative" }}>
+          <button onClick={() => scroll(-1)} style={{ position: "absolute", left: -20, top: "50%", transform: "translateY(-50%)", zIndex: 3, background: "#fff", border: "1px solid #e4dbda", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", fontSize: 22, color: "#190e0d", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 10px rgba(0,0,0,.15)" }}>‹</button>
+
+          <div ref={scrollRef} className="gallery-scroll"
+            style={{ display: "flex", gap: GAP, height: H, overflowX: "auto", scrollSnapType: "x mandatory", scrollbarWidth: "none", msOverflowStyle: "none" }}>
+            {groups.map(({ start, photos }) => (
+              <React.Fragment key={start}>
+                {/* Foto alta */}
+                <div onClick={() => setLightbox(start)} style={{ ...cardBase, width: 220, height: H, scrollSnapAlign: "start" }}>
+                  <img src={photos[0].src} alt={photos[0].alt} loading="lazy" style={imgStyle}
+                    onMouseEnter={e => e.target.style.transform = "scale(1.04)"}
+                    onMouseLeave={e => e.target.style.transform = ""} />
+                </div>
+                {/* Dos fotos pequeñas apiladas */}
+                {photos.length > 1 && (
+                  <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: GAP }}>
+                    {photos.slice(1).map((p, pi) => (
+                      <div key={pi} onClick={() => setLightbox(start + pi + 1)} style={{ ...cardBase, width: 200, height: (H - GAP) / 2 }}>
+                        <img src={p.src} alt={p.alt} loading="lazy" style={imgStyle}
+                          onMouseEnter={e => e.target.style.transform = "scale(1.04)"}
+                          onMouseLeave={e => e.target.style.transform = ""} />
+                      </div>
+                    ))}
+                    {photos.length === 2 && <div style={{ width: 200, height: (H - GAP) / 2, borderRadius: 8, background: "#e4dbda" }} />}
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
-          <button onClick={() => scroll(1)} style={arrowBtn("right")}>›</button>
+
+          <button onClick={() => scroll(1)} style={{ position: "absolute", right: -20, top: "50%", transform: "translateY(-50%)", zIndex: 3, background: "#fff", border: "1px solid #e4dbda", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", fontSize: 22, color: "#190e0d", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 10px rgba(0,0,0,.15)" }}>›</button>
         </div>
 
         {lightbox !== null && (
@@ -1492,6 +1510,7 @@ function AppInner() {
         button { font-family: inherit; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #e4dbda; border-radius: 3px; }
+        .gallery-scroll::-webkit-scrollbar { display: none; }
 
         /* Header: mobile menu / desktop nav toggle */
         @media (min-width: 768px) {
