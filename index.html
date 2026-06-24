@@ -205,26 +205,31 @@ const NAV = [
 const ROOMS = [
   {
     type: "cama-grande", name: "Habitación con cama grande", price: 40, img: IMG.camaGrande, icon: BedDouble,
+    photos: [IMG.camaGrande, IMG.camaGrande2, IMG.bano],
     desc: "Habitación doble con cama de matrimonio, decoración rústica, baño privado con ducha, TV y aire acondicionado.",
     features: ["Baño privado con ducha", "TV pantalla plana", "Aire acondicionado", "Vistas al jardín"],
   },
   {
     type: "dos-camas", name: "Habitación Doble con ducha - 2 camas", price: 40, img: IMG.dosCamas, icon: BedDouble,
+    photos: [IMG.dosCamas, IMG.dosCamas2, "fotos/03-Habitacion-Doble-2-Camas/498993448.jpg", "fotos/03-Habitacion-Doble-2-Camas/498993545.jpg"],
     desc: "Habitación con dos camas individuales, baño privado con ducha, TV y aire acondicionado.",
     features: ["Baño privado con ducha", "2 camas individuales", "TV pantalla plana", "Aire acondicionado"],
   },
   {
     type: "suite", name: "Suite con terraza", price: 75, img: IMG.suite, icon: Bath, featured: true,
+    photos: [IMG.suite, IMG.suiteExt, "fotos/04-Suite-Terraza/379694306.jpg", "fotos/04-Suite-Terraza/379695070.jpg", "fotos/04-Suite-Terraza/498994626.jpg"],
     desc: "Suite con terraza privada y cama de matrimonio. La opción más especial del hostal.",
     features: ["Terraza privada", "Baño privado", "TV pantalla plana", "Aire acondicionado"],
   },
   {
     type: "estudio", name: "Estudio Estándar", price: 60, img: IMG.estudio, icon: ChefHat,
+    photos: [IMG.estudio, IMG.estudio2, "fotos/05-Estudio-Estandar/498994227.jpg"],
     desc: "Estudio con cama doble, sofá cama y zona de cocina equipada. Ideal para estancias largas o familias.",
     features: ["Cocina equipada", "Sofá cama", "Baño privado", "TV y aire acondicionado"],
   },
   {
     type: "estudio-adaptado", name: "Estudio Adaptado Movilidad", price: 60, img: IMG.estudioAdap, icon: ChefHat,
+    photos: [IMG.estudioAdap, "fotos/06-Estudio-Adaptado-Movilidad/498993653.jpg", "fotos/06-Estudio-Adaptado-Movilidad/498993672.jpg"],
     desc: "Estudio adaptado para personas con movilidad reducida. Dos camas individuales, sofá cama y acceso adaptado.",
     features: ["Adaptado movilidad reducida", "2 camas + sofá cama", "Baño adaptado", "TV y aire acondicionado"],
   },
@@ -463,6 +468,41 @@ async function createReservation(form) {
 }
 
 // ── useReveal: scroll-triggered fade-up (mirrors real IntersectionObserver) ─
+function RoomCarousel({ photos, featured }) {
+  const [idx, setIdx] = React.useState(0);
+  const [fading, setFading] = React.useState(false);
+  const go = (newIdx) => {
+    setFading(true);
+    setTimeout(() => { setIdx(newIdx); setFading(false); }, 150);
+  };
+  const prev = (e) => { e.stopPropagation(); go((idx - 1 + photos.length) % photos.length); };
+  const next = (e) => { e.stopPropagation(); go((idx + 1) % photos.length); };
+  const btnStyle = (side) => ({
+    position: "absolute", [side]: 8, top: "50%", transform: "translateY(-50%)",
+    background: "rgba(255,255,255,.88)", border: "none", borderRadius: "50%",
+    width: 34, height: 34, cursor: "pointer", fontSize: 20, lineHeight: "34px",
+    color: "#190e0d", display: "flex", alignItems: "center", justifyContent: "center",
+    boxShadow: "0 2px 8px rgba(0,0,0,.22)", zIndex: 2, padding: 0,
+  });
+  return (
+    <div style={{ position: "relative", aspectRatio: "4/3", overflow: "hidden", background: "#1a0e0d" }}>
+      <img src={photos[idx]} alt="" loading="lazy"
+        style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .15s", opacity: fading ? 0 : 1 }} />
+      {featured && <span style={{ position: "absolute", top: 16, left: 16, background: "#d09844", color: "#190e0d", fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, padding: "6px 12px", borderRadius: 4, zIndex: 2 }}>Más reservada</span>}
+      {photos.length > 1 && <>
+        <button onClick={prev} style={btnStyle("left")}>‹</button>
+        <button onClick={next} style={btnStyle("right")}>›</button>
+        <div style={{ position: "absolute", bottom: 10, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 5, zIndex: 2 }}>
+          {photos.map((_, i) => (
+            <span key={i} onClick={(e) => { e.stopPropagation(); go(i); }}
+              style={{ width: i === idx ? 18 : 6, height: 6, borderRadius: 3, background: i === idx ? "#fff" : "rgba(255,255,255,.5)", cursor: "pointer", transition: "all .25s", display: "inline-block" }} />
+          ))}
+        </div>
+      </>}
+    </div>
+  );
+}
+
 function useReveal() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -1129,10 +1169,7 @@ function Rooms({ onReserve }) {
             <article key={r.name} style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${r.featured ? "#890000" : "#e4dbda"}`, background: "#fff", boxShadow: "0 4px 20px -8px rgba(25,14,13,.15)", transition: "transform .25s, box-shadow .25s" }}
               onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 20px 60px -20px rgba(137,0,0,.35)"; }}
               onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 20px -8px rgba(25,14,13,.15)"; }}>
-              <div style={{ position: "relative", aspectRatio: "4/3", overflow: "hidden" }}>
-                <img src={r.img} alt={`Habitación ${r.name}`} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .7s" }} />
-                {r.featured && <span style={{ position: "absolute", top: 16, left: 16, background: "#d09844", color: "#190e0d", fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, padding: "6px 12px", borderRadius: 4 }}>Más reservada</span>}
-              </div>
+              <RoomCarousel photos={r.photos || [r.img]} featured={r.featured} />
               <div style={{ padding: 24 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#890000", marginBottom: 12 }}>
                   <r.icon size={20} strokeWidth={1.75} />
