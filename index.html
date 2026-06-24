@@ -249,14 +249,37 @@ const ROOM_AMENITIES = [
 ];
 
 const GALLERY = [
-  { src: IMG.camaGrande,  alt: "Habitación con cama grande" },
-  { src: IMG.camaGrande2, alt: "Habitación con cama grande - vista alternativa" },
-  { src: IMG.dosCamas,    alt: "Habitación Doble con 2 camas" },
-  { src: IMG.suite,       alt: "Suite con terraza" },
-  { src: IMG.suiteExt,    alt: "Suite - exterior" },
-  { src: IMG.estudio,     alt: "Estudio Estándar" },
-  { src: IMG.estudioAdap, alt: "Estudio Adaptado Movilidad" },
-  { src: IMG.bano,        alt: "Baño privado" },
+  { src: "fotos/01-Exterior/379695077.jpg",                       alt: "Fachada del hostal" },
+  { src: "fotos/01-Exterior/379695075.jpg",                       alt: "Exterior" },
+  { src: "fotos/01-Exterior/498994766.jpg",                       alt: "Exterior" },
+  { src: IMG.camaGrande,                                          alt: "Habitación cama grande" },
+  { src: IMG.camaGrande2,                                         alt: "Habitación cama grande" },
+  { src: IMG.bano,                                                 alt: "Baño privado" },
+  { src: IMG.dosCamas,                                            alt: "Habitación doble 2 camas" },
+  { src: IMG.dosCamas2,                                           alt: "Habitación doble 2 camas" },
+  { src: "fotos/03-Habitacion-Doble-2-Camas/498993448.jpg",       alt: "Habitación doble 2 camas" },
+  { src: "fotos/03-Habitacion-Doble-2-Camas/498993545.jpg",       alt: "Habitación doble 2 camas" },
+  { src: IMG.suite,                                               alt: "Suite con terraza" },
+  { src: IMG.suiteExt,                                            alt: "Suite - terraza" },
+  { src: "fotos/04-Suite-Terraza/379694306.jpg",                  alt: "Suite" },
+  { src: "fotos/04-Suite-Terraza/379695070.jpg",                  alt: "Suite" },
+  { src: "fotos/04-Suite-Terraza/498994626.jpg",                  alt: "Suite - baño" },
+  { src: IMG.estudio,                                             alt: "Estudio Estándar" },
+  { src: IMG.estudio2,                                            alt: "Estudio Estándar" },
+  { src: "fotos/05-Estudio-Estandar/498994227.jpg",               alt: "Estudio - baño" },
+  { src: IMG.estudioAdap,                                         alt: "Estudio Adaptado Movilidad" },
+  { src: "fotos/06-Estudio-Adaptado-Movilidad/498993653.jpg",     alt: "Estudio Adaptado" },
+  { src: "fotos/06-Estudio-Adaptado-Movilidad/498993672.jpg",     alt: "Estudio Adaptado" },
+  { src: "fotos/08-Zonas-Comunes/379695074.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/498994673.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/498994683.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/498994705.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/498994712.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/786276749.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/786276751.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/786276752.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/786276753.jpg",                  alt: "Zonas comunes" },
+  { src: "fotos/08-Zonas-Comunes/786276844.jpg",                  alt: "Zonas comunes" },
 ];
 
 const SERVICES = [
@@ -1204,6 +1227,35 @@ function Rooms({ onReserve }) {
 
 // ── Gallery ──────────────────────────────────────────────
 function Gallery() {
+  const scrollRef = React.useRef(null);
+  const [lightbox, setLightbox] = React.useState(null);
+
+  const scroll = (dir) => {
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 600, behavior: "smooth" });
+  };
+
+  const lbPrev = (e) => { e.stopPropagation(); setLightbox(i => (i - 1 + GALLERY.length) % GALLERY.length); };
+  const lbNext = (e) => { e.stopPropagation(); setLightbox(i => (i + 1) % GALLERY.length); };
+
+  React.useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft")  setLightbox(i => (i - 1 + GALLERY.length) % GALLERY.length);
+      if (e.key === "ArrowRight") setLightbox(i => (i + 1) % GALLERY.length);
+      if (e.key === "Escape")     setLightbox(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
+
+  const arrowBtn = (side, onClick) => ({
+    position: "absolute", [side]: side === "left" ? -20 : -20, top: "50%", transform: "translateY(-50%)",
+    zIndex: 2, background: "#fff", border: "1px solid #e4dbda", borderRadius: "50%",
+    width: 40, height: 40, cursor: "pointer", fontSize: 22, color: "#190e0d",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    boxShadow: "0 2px 8px rgba(0,0,0,.15)", flexShrink: 0,
+  });
+
   return (
     <section id="galeria" style={{ padding: "96px 20px", background: "#f1edeb", borderTop: "1px solid #e4dbda" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
@@ -1212,13 +1264,35 @@ function Gallery() {
           <h2 style={{ marginTop: 16, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: "clamp(2rem,4vw,3rem)", color: "#190e0d" }}>Así es el Hostal La Plata</h2>
           <p style={{ marginTop: 16, color: "#5a5352", fontSize: "1.125rem" }}>Habitaciones con encanto rústico, vigas de madera y detalles cuidados. Fotografías reales del hostal.</p>
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }} className="gallery-grid">
-          {GALLERY.map((img, i) => (
-            <div key={i} style={{ overflow: "hidden", borderRadius: 8, background: "#fff", boxShadow: "0 4px 20px -8px rgba(25,14,13,.15)", gridRow: (i === 0 || i === 5) ? "span 2" : undefined, aspectRatio: (i === 0 || i === 5) ? "3/4" : "1/1" }}>
-              <img src={img.src} alt={img.alt} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .7s" }} />
-            </div>
-          ))}
+
+        <div style={{ position: "relative", padding: "0 28px" }}>
+          <button onClick={() => scroll(-1)} style={arrowBtn("left")}>‹</button>
+          <div ref={scrollRef} style={{ display: "flex", gap: 12, overflowX: "auto", scrollSnapType: "x mandatory", scrollbarWidth: "none", msOverflowStyle: "none" }}>
+            {GALLERY.map((img, i) => (
+              <div key={i} onClick={() => setLightbox(i)}
+                style={{ flexShrink: 0, width: 280, height: 210, borderRadius: 8, overflow: "hidden", cursor: "pointer", scrollSnapAlign: "start", boxShadow: "0 4px 20px -8px rgba(25,14,13,.15)" }}>
+                <img src={img.src} alt={img.alt} loading="lazy"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .4s" }}
+                  onMouseEnter={e => e.target.style.transform = "scale(1.05)"}
+                  onMouseLeave={e => e.target.style.transform = ""} />
+              </div>
+            ))}
+          </div>
+          <button onClick={() => scroll(1)} style={arrowBtn("right")}>›</button>
         </div>
+
+        {lightbox !== null && (
+          <div onClick={() => setLightbox(null)}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.93)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <button onClick={lbPrev} style={{ position: "absolute", left: 20, background: "rgba(255,255,255,.12)", border: "none", borderRadius: "50%", width: 52, height: 52, cursor: "pointer", fontSize: 30, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
+            <img src={GALLERY[lightbox].src} alt={GALLERY[lightbox].alt} onClick={e => e.stopPropagation()}
+              style={{ maxWidth: "90vw", maxHeight: "88vh", objectFit: "contain", borderRadius: 6, boxShadow: "0 0 80px rgba(0,0,0,.6)" }} />
+            <button onClick={lbNext} style={{ position: "absolute", right: 20, background: "rgba(255,255,255,.12)", border: "none", borderRadius: "50%", width: 52, height: 52, cursor: "pointer", fontSize: 30, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
+            <button onClick={e => { e.stopPropagation(); setLightbox(null); }}
+              style={{ position: "absolute", top: 20, right: 20, background: "rgba(255,255,255,.12)", border: "none", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", fontSize: 20, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+            <span style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,.55)", fontSize: "0.875rem" }}>{lightbox + 1} / {GALLERY.length}</span>
+          </div>
+        )}
       </div>
     </section>
   );
