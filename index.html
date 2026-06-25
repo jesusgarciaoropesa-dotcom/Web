@@ -188,7 +188,7 @@ const WA_NUMBER = "+34 610 24 86 33";
 const WA_MSG = "Hola, me gustaría hacer una reserva en el Hostal La Plata. ¿Podéis indicarme disponibilidad?";
 const WA_LINK = `https://wa.me/34610248633?text=${encodeURIComponent(WA_MSG)}`;
 
-const ROOM_PRICES = { "cama-grande": 40, "dos-camas": 40, suite: 75, estudio: 60, "estudio-adaptado": 60 };
+const ROOM_PRICES = { "cama-grande": 45, "dos-camas": 40, suite: 55, estudio: 60, "estudio-adaptado": 60 };
 const ROOM_LABELS = { "cama-grande": "Habitación con cama grande", "dos-camas": "Habitación Doble 2 camas", suite: "Suite con terraza", estudio: "Estudio Estándar", "estudio-adaptado": "Estudio Adaptado Movilidad" };
 // Mapa de habitaciones físicas por tipo (fuente fiable de disponibilidad, igual que la app admin)
 const ROOMS_BY_TYPE = { "cama-grande": ["101","102","103","104"], "dos-camas": ["105","106"], suite: ["107","108"], estudio: ["A-1"], "estudio-adaptado": ["A-2"] };
@@ -204,7 +204,7 @@ const NAV = [
 
 const ROOMS = [
   {
-    type: "cama-grande", name: "Habitación con cama grande", price: 40, img: IMG.camaGrande, icon: BedDouble,
+    type: "cama-grande", name: "Habitación con cama grande", price: 45, img: IMG.camaGrande, icon: BedDouble,
     photos: [IMG.camaGrande, IMG.camaGrande2, IMG.bano],
     desc: "Habitación doble con cama de matrimonio, decoración rústica, baño privado con ducha, TV y aire acondicionado.",
     features: ["Baño privado con ducha", "TV pantalla plana", "Aire acondicionado", "Vistas al jardín"],
@@ -216,7 +216,7 @@ const ROOMS = [
     features: ["Baño privado con ducha", "2 camas individuales", "TV pantalla plana", "Aire acondicionado"],
   },
   {
-    type: "suite", name: "Suite con terraza", price: 75, img: IMG.suite, icon: Bath, featured: true,
+    type: "suite", name: "Suite con terraza", price: 55, img: IMG.suite, icon: Bath, featured: true,
     photos: [IMG.suite, IMG.suiteExt, "fotos/04-Suite-Terraza/379694306.jpg", "fotos/04-Suite-Terraza/379695070.jpg", "fotos/04-Suite-Terraza/498994626.jpg"],
     desc: "Suite con terraza privada y cama de matrimonio. La opción más especial del hostal.",
     features: ["Terraza privada", "Baño privado", "TV pantalla plana", "Aire acondicionado"],
@@ -735,9 +735,9 @@ function ReservationDialog({ open, onOpenChange, initialRoom }) {
               <div>
                 <label style={lbl}>Tipo de habitación</label>
                 <select value={form.room_type} onChange={e => setForm({ ...form, room_type: e.target.value })} style={inp}>
-                  <option value="cama-grande">Habitación con cama grande — 40€/noche</option>
+                  <option value="cama-grande">Habitación con cama grande — 45€/noche</option>
                   <option value="dos-camas">Habitación Doble 2 camas — 40€/noche</option>
-                  <option value="suite">Suite con terraza — 75€/noche</option>
+                  <option value="suite">Suite con terraza — 55€/noche</option>
                   <option value="estudio">Estudio Estándar — 60€/noche</option>
                   <option value="estudio-adaptado">Estudio Adaptado Movilidad — 60€/noche</option>
                 </select>
@@ -820,9 +820,9 @@ const nextId = () => `m${++_mid}`;
 const RESERVE_KEYWORDS = /reserv|disponibil|habitaci|noche|alojam/i;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CHAT_ROOMS = [
-  { key: "cama-grande", label: "Habitación con cama grande", price: 40, capacity: 2 },
+  { key: "cama-grande", label: "Habitación con cama grande", price: 45, capacity: 2 },
     { key: "dos-camas", label: "Habitación Doble 2 camas", price: 40, capacity: 2 },
-    { key: "suite", label: "Suite con terraza", price: 75, capacity: 2 },
+    { key: "suite", label: "Suite con terraza", price: 55, capacity: 2 },
     { key: "estudio", label: "Estudio Estándar", price: 60, capacity: 4 },
     { key: "estudio-adaptado", label: "Estudio Adaptado Movilidad", price: 60, capacity: 4 },
 ];
@@ -1157,7 +1157,7 @@ function Hero({ onReserve }) {
         </p>
         <div style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: 12 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 20, background: "#d09844", color: "#190e0d", padding: "6px 16px", fontSize: "0.8rem", fontWeight: 600, boxShadow: "0 4px 20px -8px rgba(25,14,13,.15)" }}>✓ 10% descuento reserva directa vs Booking</span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 20, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.3)", color: "#fff", padding: "6px 16px", fontSize: "0.8rem", fontWeight: 600 }}>⭐ 8,2 / 10 en Booking</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 20, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.3)", color: "#fff", padding: "6px 16px", fontSize: "0.8rem", fontWeight: 600 }}>⭐ 8,7 / 10 en Booking</span>
         </div>
         <div style={{ marginTop: 32, display: "flex", flexWrap: "wrap", gap: 16 }}>
           <button onClick={onReserve} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 6, background: "#890000", padding: "14px 28px", fontSize: "1rem", fontWeight: 600, color: "#fefbf8", boxShadow: "0 20px 60px -20px rgba(137,0,0,.35)", border: "none", cursor: "pointer" }}>Reservar ahora</button>
