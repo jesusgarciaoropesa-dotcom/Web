@@ -188,7 +188,8 @@ const WA_NUMBER = "+34 610 24 86 33";
 const WA_MSG = "Hola, me gustaría hacer una reserva en el Hostal La Plata. ¿Podéis indicarme disponibilidad?";
 const WA_LINK = `https://wa.me/34610248633?text=${encodeURIComponent(WA_MSG)}`;
 
-const ROOM_PRICES = { "cama-grande": 45, "dos-camas": 40, suite: 55, estudio: 60, "estudio-adaptado": 60 };
+const ROOM_PRICES    = { "cama-grande": 45, "dos-camas": 40, suite: 55, estudio: 60, "estudio-adaptado": 60 };
+const ROOM_CAPACITY  = { "cama-grande": 2,  "dos-camas": 2,  suite: 3,  estudio: 3,  "estudio-adaptado": 3  };
 const ROOM_LABELS = { "cama-grande": "Habitación con cama grande", "dos-camas": "Habitación Doble 2 camas", suite: "Suite con terraza", estudio: "Estudio Estándar", "estudio-adaptado": "Estudio Adaptado Movilidad" };
 // Mapa de habitaciones físicas por tipo (fuente fiable de disponibilidad, igual que la app admin)
 const ROOMS_BY_TYPE = { "cama-grande": ["101","102","103","104"], "dos-camas": ["105","106"], suite: ["107","108"], estudio: ["A-1"], "estudio-adaptado": ["A-2"] };
@@ -746,7 +747,8 @@ function ReservationDialog({ open, onOpenChange, initialRoom }) {
               </div>
               <div>
                 <label style={lbl}>Número de huéspedes</label>
-                <input type="number" min={1} max={10} required value={form.num_guests} onChange={e => setForm({ ...form, num_guests: Number(e.target.value) })} style={inp} />
+                <input type="number" min={1} max={ROOM_CAPACITY[form.room_type] || 2} required value={form.num_guests} onChange={e => setForm({ ...form, num_guests: Number(e.target.value) })} style={inp} />
+                <span style={{ fontSize: "0.75rem", color: "#5a5352", marginTop: 4, display: "block" }}>Máximo {ROOM_CAPACITY[form.room_type] || 2} persona{(ROOM_CAPACITY[form.room_type] || 2) > 1 ? "s" : ""}</span>
               </div>
               <div>
                 <label style={lbl}>Nombre completo</label>
@@ -820,9 +822,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CHAT_ROOMS = [
   { key: "cama-grande", label: "Habitación con cama grande", price: 45, capacity: 2 },
     { key: "dos-camas", label: "Habitación Doble 2 camas", price: 40, capacity: 2 },
-    { key: "suite", label: "Suite con terraza", price: 55, capacity: 2 },
-    { key: "estudio", label: "Estudio Estándar", price: 60, capacity: 4 },
-    { key: "estudio-adaptado", label: "Estudio Adaptado Movilidad", price: 60, capacity: 4 },
+    { key: "suite", label: "Suite con terraza", price: 55, capacity: 3 },
+    { key: "estudio", label: "Estudio Estándar", price: 60, capacity: 3 },
+    { key: "estudio-adaptado", label: "Estudio Adaptado Movilidad", price: 60, capacity: 3 },
 ];
 
 function ReservationChatbot() {
