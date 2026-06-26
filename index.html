@@ -193,7 +193,7 @@ const ROOM_PRICES    = { "cama-grande": 45, "dos-camas": 40, suite: 55, estudio:
 const ROOM_CAPACITY  = { "cama-grande": 2,  "dos-camas": 2,  suite: 3,  estudio: 3,  "estudio-adaptado": 3  };
 const ROOM_LABELS = { "cama-grande": "Habitación con cama grande", "dos-camas": "Habitación Doble 2 camas", suite: "Suite con terraza", estudio: "Estudio Estándar", "estudio-adaptado": "Estudio Adaptado Movilidad" };
 // Mapa de habitaciones físicas por tipo (fuente fiable de disponibilidad, igual que la app admin)
-const ROOMS_BY_TYPE = { "cama-grande": ["101","102","103","104"], "dos-camas": ["105","106"], suite: ["107","108"], estudio: ["A-1"], "estudio-adaptado": ["A-2"] };
+const ROOMS_BY_TYPE = { "cama-grande": ["103","106"], "dos-camas": ["101","102","104","105","108"], suite: ["107"], estudio: ["2"], "estudio-adaptado": ["1"] };
 function roomsCount(roomType){ return (ROOMS_BY_TYPE[roomType] || []).length || 1; }
 
 const NAV = [
