@@ -335,7 +335,7 @@ async function sendAdminEmail(to, subject, html) {
   try {
     const res = await fetch("https://email-hostal.jesusgarciaoropesa.workers.dev/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-Worker-Secret": "HLP-2025-xK9mQvR4nJwZ8pTdL3cY" },
       body: JSON.stringify({ from: "Hostal La Plata <onboarding@resend.dev>", to: [to], subject, html }),
     });
     if (!res.ok) {
